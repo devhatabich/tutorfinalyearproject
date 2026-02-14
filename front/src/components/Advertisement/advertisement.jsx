@@ -1,28 +1,35 @@
-import React from 'react';
-import Card from "../Card/card.jsx";
+import React,{useState,useEffect} from 'react'
+import Card from '../Card/card'
 
-function Advertisement(props) {
+const Advertisement = () => {
+
+    const [userData,setUserData] = useState(null)
+
+    useEffect(()=>{
+        let userData = localStorage.getItem('userInfo')
+        setUserData(userData? JSON.parse(userData):null)
+    },[])
+
     return (
-        <div className = 'sticky top-18'>
+        <div className='sticky top-18'>
             <Card padding={0}>
-                <div className = 'mb-8 h-25'>
-                    <div className = 'relative w-full h-22 rounded-md'>
-                        <img src='https://upload.wikimedia.org/wikipedia/en/9/9d/Bonzi_Buddy.png' className = 'rounded-t-md h-full w-full' />
+                <div className='relative h-10'>
+                    <div className='relative w-full h-22 rounded-md'>
+                        {/* dont forget <img src='https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?cs=srgb&dl=pexels-zulian-yuliansyah-573130.jpg&fm=jpg' className='rounded-t-md h-full w-full' />*/}
                     </div>
-                    <div className = 'flex justify-self-center m-0 z-10'>
-                        <img src = 'https://d7hftxdivxxvm.cloudfront.net/?quality=80&resize_to=width&src=https%3A%2F%2Fartsy-media-uploads.s3.amazonaws.com%2F2RNK1P0BYVrSCZEy_Sd1Ew%252F3417757448_4a6bdf36ce_o.jpg&width=910' className = 'rounded-full border-2 h-16 w-16 border-white cursor-pointer'/>
-                    </div>
+                    {/*<div className='absolute top-14 left-[40%] z-10'>* dont forget/}
+                    {/*    <img src={userData?.profilePic} className='rounded-full border-2 h-14 w-14 border-white cursor-pointer' />*/}
+                    {/*</div>*/}
                 </div>
 
-                <div className = 'px-5 my-5 mx-auto text-gray-700'>
-                    <div className = 'text-base font-semibold text-center'>Test User</div>
-                    <div className = 'text-sm my-3 text-center'>Latest Posts</div>
-                    <div className = 'text-sm my-1 text-center p-2 rounded-2xl font-bold border-blue-950 text-white bg-blue-800 cursor-point'>Explore</div>
+                <div className='px-5 my-5 mx-auto'>
+                    <div className="text-sm font-semibold text-center">{userData?.f_name}</div>
+                    <div className="text-sm my-3 text-center">Keep going! 0 points so far!</div>
+                    <div className="text-sm my-1 border-1 text-center p-2 rounded-2xl font-bold border-blue-950 text-white bg-gray-700 cursor-pointer">Support a Peer</div>
                 </div>
             </Card>
-
         </div>
-    );
+    )
 }
 
-export default Advertisement;
+export default Advertisement
