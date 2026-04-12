@@ -1,6 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
-body{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:'Golos Text', sans-serif;
+    background-color: #f0f4f1;
+    color: #111827;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.up-link {
+    transition: color 0.18s, background-color 0.18s;
+    border-radius: 4px;
+    padding: 1px 4px;
+    margin: 0 -4px;
+}
+.up-link:hover {
+    color: #fff !important;
+    background-color: #506579;
+}
+
+.up-card-hover {
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.up-card-hover:hover {
+    box-shadow: 0 6px 24px rgba(1, 199, 253, 0.13);
+    transform: translateY(-2px);
+}
+
+.up-btn-glow {
+    transition: box-shadow 0.2s, opacity 0.2s;
+}
+.up-btn-glow:hover {
+    box-shadow: 0 0 0 3px #fcd053;
 }

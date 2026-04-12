@@ -9,6 +9,9 @@ exports.auth = async (req, res, next) => {
         }
         const decode = jwt.verify(token,process.env.JWT_PRIVATE_KEY);
         req.user = await User.findById(decode.userId).select('-password');
+        if (!req.user) {
+            return res.status(401).json({ error: 'User not found' });
+        }
         next();
 
 

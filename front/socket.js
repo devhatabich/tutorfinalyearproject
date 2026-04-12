@@ -1,6 +1,5 @@
 import {io} from "socket.io-client";
 
-const socket = io('ws://localhost:4000');
-
+const socket = io(import.meta.env.VITE_WS_URL || 'http://localhost:4000');
 
 export default socket;

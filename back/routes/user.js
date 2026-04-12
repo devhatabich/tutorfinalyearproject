@@ -21,9 +21,11 @@ router.get('/findUser',Authentication.auth,UserController.findUser)
 router.post('/sendFriendReq',Authentication.auth,UserController.sendFriendRequest)
 router.post('/acceptFriendRequest',Authentication.auth,UserController.acceptFriendRequest);
 router.delete('/removeFromFriendList/:friendId',Authentication.auth,UserController.removeFromFriend)
+router.delete('/declineFriendRequest/:senderId',Authentication.auth,UserController.declineFriendRequest)
 
 router.get('/friendsList',Authentication.auth,UserController.getFriendsList)
 router.get('/pendingFriendsList',Authentication.auth,UserController.getPendingFriendList)
+router.get('/isFriend/:otherId',Authentication.auth,UserController.isFriendCheck)
 
 
 module.exports = router;

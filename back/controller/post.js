@@ -111,3 +111,15 @@ exports.getAllPostForUser = async(req,res)=>{
         res.status(500).json({ error: 'Server error',message:err.message });
     }
 }
+
+exports.getMyStats = async(req,res)=>{
+    try{
+        const posts = await PostModel.find({ user: req.user._id });
+        const postCount = posts.length;
+        const totalLikes = posts.reduce((sum, p) => sum + (p.likes?.length || 0), 0);
+        return res.status(200).json({ postCount, totalLikes });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ error: 'Server error', message: err.message });
+    }
+}

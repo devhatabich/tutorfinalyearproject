@@ -6,11 +6,13 @@ const NotificationModal = require('../models/notification')
 
 
 
+const TOKEN_EXPIRY = '7d';
+
 const cookieOptions = {
     httpOnly: true,
     secure: false, // Set to true in production
-    sameSite: 'Lax' // set None in production
-
+    sameSite: 'Lax', // set None in production
+    maxAge: 7 * 24 * 60 * 60 * 1000
 };
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -36,7 +38,7 @@ exports.loginThroghGmail = async(req,res)=>{
                 profilePic: picture
             });
         }
-        let jwttoken =  jwt.sign({ userId: userExist._id }, process.env.JWT_PRIVATE_KEY);
+        let jwttoken =  jwt.sign({ userId: userExist._id }, process.env.JWT_PRIVATE_KEY, { expiresIn: TOKEN_EXPIRY });
         res.cookie('token',jwttoken,cookieOptions);
         return res.status(200).json({ user: userExist });
 
@@ -76,7 +78,7 @@ exports.login = async(req,res)=>{
         }
         
         if(userExist && await bcryptjs.compare(password,userExist.password)){
-            let token =  jwt.sign({ userId: userExist._id }, process.env.JWT_PRIVATE_KEY);
+            let token =  jwt.sign({ userId: userExist._id }, process.env.JWT_PRIVATE_KEY, { expiresIn: TOKEN_EXPIRY });
             res.cookie('token',token,cookieOptions)
             return res.json({ message: 'Logged in successfully', success: "true", userExist });
         }else{
@@ -307,5 +309,26 @@ exports.removeFromFriend = async(req,res)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({ error: 'Server error',message:err.message });
+    }
+}
+
+exports.isFriendCheck = async (req, res) => {
+    const isFriend = req.user.friends.some(id => id.equals(req.params.otherId));
+    res.json({ isFriend });
+};
+
+exports.declineFriendRequest = async (req, res) => {
+    try {
+        const { senderId } = req.params;
+        const index = req.user.pending_friends.findIndex(id => id.equals(senderId));
+        if (index === -1) {
+            return res.status(400).json({ error: 'No such request found' });
+        }
+        req.user.pending_friends.splice(index, 1);
+        await req.user.save();
+        return res.status(200).json({ message: 'Request declined' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error', message: err.message });
     }
 }

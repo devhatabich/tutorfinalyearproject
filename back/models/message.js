@@ -14,6 +14,15 @@ const MessageSchema = new mongoose.Schema({
     },
     picture:{
         type:String
+    },
+    postId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'post',
+        default: null
+    },
+    isRead:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true});
 

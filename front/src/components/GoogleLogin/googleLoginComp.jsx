@@ -8,12 +8,12 @@ const GoogleLoginComp = (props) => {
     const navigate= useNavigate();
     const handleOnSucess = async (credResponse) => {
         const token = credResponse.credential;
-        const res = await axios.post('http://localhost:4000/api/auth/google', { token }, { withCredentials: true });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, { token }, { withCredentials: true });
         
         localStorage.setItem('isLogin', 'true');
         localStorage.setItem("userInfo", JSON.stringify(res.data.user));
         props.changeLoginValue(true)
-        navigate('/feeds')
+        navigate(res.data.user?.isAdmin ? '/admin' : '/feeds');
     }
     return (
         <div className='w-full'>

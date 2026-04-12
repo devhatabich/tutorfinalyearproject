@@ -1,0 +1,21 @@
+{
+  "name": "tutorfyp",
+  "version": "1.0.0",
+  "description": "Final year project",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0"
+  },
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}

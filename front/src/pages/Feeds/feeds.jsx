@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Card from '../../components/Card/card'
 import ProfileCard from '../../components/ProfileCard/profileCard'
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -8,144 +8,127 @@ import Advertisement from '../../components/Advertisement/advertisement';
 import Post from '../../components/Post/post';
 import Modal from '../../components/Modal/modal';
 import AddModal from '../../components/AddModal/addModal';
-import Loader from '../../components/Loader/loader';
+import Avatar from '../../components/Avatar/avatar';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import { useSearchParams } from 'react-router-dom';
 
 const Feeds = () => {
+    const [personalData, setPersonalData] = useState(null);
+    const [post, setPost] = useState([])
+    const [addPostModal, setAddPostModal] = useState(false);
+    const [postType, setPostType] = useState('post');
+    const [stats, setStats] = useState({ postCount: 0, totalLikes: 0 });
+    const [highlightId, setHighlightId] = useState(null);
+    const [searchParams] = useSearchParams();
+    const didScrollRef = useRef(false);
 
-  const [personalData, setPersonalData] = useState(null);
-  const [post, setPost] = useState([])
+    const openModal = (type = 'post') => { setPostType(type); setAddPostModal(true); };
 
-  const [addPostModal, setAddPostModal] = useState(false);
-
-  // const fetchSelfData = async()=>{
-  //   await axios.get('http://localhost:4000/api/auth/self',{withCredentials:true}).then(res=>{
-  //     setPersonalData(res.data.user)
-  //   }).catch(err=>{
-  //     console.error('API error:', err);
-  //     toast.error(err?.response?.data?.error)
-  //   })
-  // }
-
-  const fetchData = async () => {
-    try {
-      const [userData, postData] = await Promise.all([
-        await axios.get('http://localhost:4000/api/auth/self', { withCredentials: true }),
-        await axios.get('http://localhost:4000/api/post/getAllPost')
-      ]);
-
-      setPersonalData(userData.data.user)
-      localStorage.setItem('userInfo', JSON.stringify(userData.data.user));
-      setPost(postData.data.posts)
-
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.response?.data?.error)
+    const fetchData = async () => {
+        try {
+            const [userData, postData, statsData] = await Promise.all([
+                axios.get(`${import.meta.env.VITE_API_URL}/api/auth/self`, { withCredentials: true }),
+                axios.get(`${import.meta.env.VITE_API_URL}/api/post/getAllPost`),
+                axios.get(`${import.meta.env.VITE_API_URL}/api/post/myStats`, { withCredentials: true }),
+            ]);
+            setPersonalData(userData.data.user);
+            localStorage.setItem('userInfo', JSON.stringify(userData.data.user));
+            setPost(postData.data.posts);
+            setStats(statsData.data);
+        } catch (err) {
+            console.log(err)
+            toast.error(err?.response?.data?.error)
+        }
     }
 
-  }
+    useEffect(() => { fetchData() }, [])
 
-  useEffect(() => {
-    // fetchSelfData()
-    fetchData()
-  }, [])
+    useEffect(() => {
+        const targetId = searchParams.get('post');
+        if (!targetId || !post.length || didScrollRef.current) return;
+        const el = document.getElementById(`post-${targetId}`);
+        if (el) {
+            didScrollRef.current = true;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setHighlightId(targetId);
+            setTimeout(() => setHighlightId(null), 3000);
+        }
+    }, [post, searchParams])
 
-  const handleOpenPostModal = () => {
-    setAddPostModal(prev => !prev)
-  }
-  return (
-    <div className='px-5 xl:px-50 py-9 flex gap-5 w-full mt-5 bg-gray-100'>
-      {/* left side */}
-      <div className='w-[21%] sm:block sm:w-[23%] hidden py-5'>
-        <div className='h-fit'>
-          <ProfileCard data={personalData} />
-        </div>
-
-        <div className='w-full my-5'>
-          <Card padding={1}>
-            <div className=" w-full flex justify-between">
-              <div>Profile Viewers</div>
-              <div className="text-gray-700">23</div>
-            </div>
-            <div className=" w-full flex justify-between">
-              <div>Application Reactions</div>
-              <div className="text-gray-700">90</div>
-            </div>
-          </Card>
-        </div>
-
-      </div>
-
-      {/* middle side */}
-      <div className='w-[100%] py-5 sm:w-[50%] '>
-
-        {/* Post Section */}
-        <div>
-          <Card padding={1}>
-            <div className='flex gap-2 items-center'>
-              <img src={personalData?.profilePic} className='rounded-4xl w-13 h-13 border-2 border-white cursor-pointer' />
-              <div onClick={() => setAddPostModal(true)} className="w-full border-1 py-3 px-3 rounded-3xl cursor-pointer hover:bg-gray-100"> Start a post</div>
+    return (
+        <div className='px-4 md:px-8 xl:px-32 py-6 flex gap-5 w-full' style={{ backgroundColor: '#f0f4f1' }}>
+            {/* Left sidebar */}
+            <div className='hidden sm:block w-56 shrink-0'>
+                <div className='sticky top-18 flex flex-col gap-4'>
+                    <ProfileCard data={personalData} />
+                    <Card padding={1}>
+                        <div className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: '#435465' }}>Your Stats</div>
+                        <div className="flex justify-between text-sm py-1.5 border-b border-gray-100">
+                            <span className="text-gray-500">Connections</span>
+                            <span className="font-semibold text-gray-700">{personalData?.friends?.length ?? '—'}</span>
+                        </div>
+                        <div className="flex justify-between text-sm py-1.5 border-b border-gray-100">
+                            <span className="text-gray-500">Posts</span>
+                            <span className="font-semibold text-gray-700">{stats.postCount}</span>
+                        </div>
+                        <div className="flex justify-between text-sm py-1.5">
+                            <span className="text-gray-500">Likes received</span>
+                            <span className="font-semibold text-gray-700">{stats.totalLikes}</span>
+                        </div>
+                    </Card>
+                </div>
             </div>
 
-            <div className='w-full flex mt-3'>
-              <div onClick={() => setAddPostModal(true)} className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'><VideoCallIcon sx={{ color: "green" }} /> Video</div>
-              <div onClick={() => setAddPostModal(true)} className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'><InsertPhotoIcon sx={{ color: "gray" }} /> Photo</div>
+            {/* Main feed */}
+            <div className='flex-1 min-w-0 flex flex-col gap-4'>
+                <Card padding={1}>
+                    <div className='flex gap-3 items-center'>
+                        <Avatar src={personalData?.profilePic} name={personalData?.f_name} size="md" className='w-11 h-11 border border-gray-200 shrink-0' />
+                        <div
+                            onClick={() => openModal('post')}
+                            className="flex-1 border border-gray-200 py-2.5 px-4 rounded-full text-sm text-gray-400 cursor-pointer hover:bg-gray-50 transition-colors"
+                        >
+                            What's on your mind?
+                        </div>
+                    </div>
+                    <div className='flex mt-3 pt-3 border-t border-gray-100'>
+                        {[
+                            { icon: <VideoCallIcon sx={{ fontSize: 20, color: '#435465' }} />, label: 'Video',   type: 'video' },
+                            { icon: <InsertPhotoIcon sx={{ fontSize: 20, color: '#6b7280' }} />, label: 'Photo', type: 'photo' },
+                            { icon: <ArticleIcon sx={{ fontSize: 20, color: '#d97706' }} />, label: 'Article',   type: 'post'  },
+                        ].map((item) => (
+                            <div
+                                key={item.label}
+                                onClick={() => openModal(item.type)}
+                                className='flex-1 flex gap-1.5 items-center justify-center py-1.5 rounded-lg text-sm text-gray-500 cursor-pointer hover:bg-gray-50 transition-colors'
+                            >
+                                {item.icon} {item.label}
+                            </div>
+                        ))}
+                    </div>
+                </Card>
 
-              <div onClick={() => setAddPostModal(true)} className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'><ArticleIcon sx={{ color: "orange" }} />Article</div>
-
+                {post.map((item, index) => (
+                    <Post item={item} key={index} personalData={personalData} highlight={highlightId === item._id?.toString()} />
+                ))}
             </div>
-          </Card>
-        </div>
 
-
-        <div className="border-b-1 border-gray-400 w-[100%] my-5" />
-
-        <div className='w-full flex flex-col gap-5'>
-          
-          {
-            post.map((item,index)=>{
-              return <Post item={item} key={index} personalData={personalData} />;
-            })
-          }
-          
-        </div>
-
-      </div>
-
-      {/* right side */}
-      <div className='w-[26%] py-5 hidden md:block'>
-
-        <div>
-          <Card padding={1}>
-            <div className="text-xl">Announcements</div>
-            <div className="text-gray-600">Top news</div>
-            <div className="my-1">
-              <div className="text-md">The beta release is scheduled mid-February. Stay tuned!</div>
-              <div className="text-xs text-gray-400">2h ago</div>
+            {/* Right sidebar */}
+            <div className='hidden md:block w-64 shrink-0'>
+                <div className='sticky top-18'>
+                    <Advertisement />
+                </div>
             </div>
-            <div className="my-1">
-              <div className="text-md">Almost all core functionalities have been implemented in the beta version.</div>
-              <div className="text-xs text-gray-400">3h ago</div>
-            </div>
-          </Card>
+
+            {addPostModal && (
+                <Modal closeModal={() => setAddPostModal(false)} title="Create a post">
+                    <AddModal personalData={personalData} defaultType={postType} />
+                </Modal>
+            )}
+            <ToastContainer />
         </div>
-
-        <div className='my-5 sticky top-19'>
-          <Advertisement />
-        </div>
-
-      </div>
-
-      {
-        addPostModal && <Modal closeModal={handleOpenPostModal} title={""}>
-          <AddModal personalData={personalData} />
-        </Modal>
-      }
-      <ToastContainer />
-
-    </div>
-  )
+    )
 }
 
 export default Feeds

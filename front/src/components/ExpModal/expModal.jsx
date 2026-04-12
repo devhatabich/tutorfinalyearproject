@@ -1,73 +1,71 @@
 import React, { useState } from 'react'
 
-const ExpModal = ({ handleEditFunc, selfData, updateExp, setUpdateExp }) => {
+const inputCls = 'w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-gray-400 transition-colors';
 
+const ExpModal = ({ handleEditFunc, selfData, updateExp }) => {
     const [data, setData] = useState({
-        designation: updateExp?.clicked ? updateExp?.data?.designation : "",
-        company_name: updateExp?.clicked ? updateExp?.data?.company_name : "",
-        duration: updateExp?.clicked ? updateExp?.data?.duration : "",
-        location: updateExp?.clicked ? updateExp?.data?.location : ""
-    })
+        designation: updateExp?.clicked ? updateExp?.data?.designation : '',
+        company_name: updateExp?.clicked ? updateExp?.data?.company_name : '',
+        duration: updateExp?.clicked ? updateExp?.data?.duration : '',
+        location: updateExp?.clicked ? updateExp?.data?.location : '',
+    });
 
-    const onChangeHandle = (event, key) => {
-        setData({ ...data, [key]: event.target.value })
-    }
+    const onChange = (key) => (e) => setData(prev => ({ ...prev, [key]: e.target.value }));
 
-    const updateExpSave = ()=>{
-        let newFilteredData = selfData?.experience.filter((item)=>item._id !==updateExp?.data?._id);
-        let newArr = [...newFilteredData,data];
-        let newData = {...selfData,experience:newArr};
-        handleEditFunc(newData)
-    }
+    const updateExpSave = () => {
+        const newFilteredData = selfData?.experience.filter(item => item._id !== updateExp?.data?._id);
+        handleEditFunc({ ...selfData, experience: [...newFilteredData, data] });
+    };
 
     const handleOnSave = () => {
+        if (updateExp?.clicked) return updateExpSave();
+        handleEditFunc({ ...selfData, experience: [...(selfData?.experience || []), data] });
+    };
 
-        if(updateExp?.clicked) return updateExpSave();
+    const handleOnDelete = () => {
+        const newFilteredData = selfData?.experience.filter(item => item._id !== updateExp?.data?._id);
+        handleEditFunc({ ...selfData, experience: newFilteredData });
+    };
 
-        let expArr = [...selfData?.experience, data];
-        let newData = { ...selfData, experience: expArr };
-        handleEditFunc(newData)
-    }
-
-    const handleOnDelete = ()=>{
-        let newFilteredData = selfData?.experience.filter((item)=>item._id !==updateExp?.data?._id);
-        let newData = {...selfData,experience:newFilteredData};
-        handleEditFunc(newData)
-    }
-
+    const field = (label, key, placeholder) => (
+        <div className='w-full mb-4'>
+            <label className='text-sm font-medium text-gray-700 block mb-1'>{label}</label>
+            <input
+                type='text'
+                value={data[key]}
+                onChange={onChange(key)}
+                className={inputCls}
+                placeholder={placeholder}
+            />
+        </div>
+    );
 
     return (
-        <div className='mt-8 w-full h-[350px] overflow-auto'>
-            <div className='w-full mb-4'>
-                <label>Role*</label>
-                <br />
-                <input type='text' value={data.designation} onChange={(e) => onChangeHandle(e, 'designation')} className='p-2 mt-1 w-full border-1 rounded-md' placeholder='Enter Role' />
-            </div>
-            <div className='w-full mb-4'>
-                <label>Company*</label>
-                <br />
-                <input type='text' value={data.company_name} onChange={(e) => onChangeHandle(e, 'company_name')} className='p-2 mt-1 w-full border-1 rounded-md' placeholder='Enter Company Name' />
-            </div>
-            <div className='w-full mb-4'>
-                <label>Duration*</label>
-                <br />
-                <input type='text' value={data.duration} onChange={(e) => onChangeHandle(e, 'duration')} className='p-2 mt-1 w-full border-1 rounded-md' placeholder='Enter Duration' />
-            </div>
-            <div className='w-full mb-4'>
-                <label>Place*</label>
-                <br />
-                <input value={data.location} onChange={(e) => onChangeHandle(e, 'location')} type='text' className='p-2 mt-1 w-full border-1 rounded-md' placeholder='Enter Place' />
-            </div>
+        <div className='px-5 py-4 overflow-y-auto'>
+            {field('Role', 'designation', 'e.g. Software Engineer')}
+            {field('Institution / Company', 'company_name', 'e.g. MIT, Acme Corp')}
+            {field('Duration', 'duration', 'e.g. 2020 – 2024')}
+            {field('Location', 'location', 'e.g. New York, NY')}
 
-            <div className='flex justify-between'>
-                <div className="bg-gray-700 text-white w-fit py-1 px-3 cursor-pointer rounded-2xl" onClick={handleOnSave}>Save</div>
-                {
-                    updateExp?.clicked && <div className="bg-gray-700 text-white w-fit py-1 px-3 cursor-pointer rounded-2xl" onClick={handleOnDelete}>Delete</div>
-                }
-
+            <div className='flex gap-3 mt-2'>
+                <button
+                    onClick={handleOnSave}
+                    className='flex-1 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity'
+                    style={{ backgroundColor: '#435465' }}
+                >
+                    {updateExp?.clicked ? 'Update' : 'Add'}
+                </button>
+                {updateExp?.clicked && (
+                    <button
+                        onClick={handleOnDelete}
+                        className='px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity bg-red-600'
+                    >
+                        Delete
+                    </button>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ExpModal
+export default ExpModal;
