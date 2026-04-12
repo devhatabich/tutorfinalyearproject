@@ -6,9 +6,11 @@ const {Server} = require('socket.io')
 const http = require("http");
 
 const server = http.createServer(app);
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
 const io = new Server(server,{
     cors:{
-        origin:"http://localhost:5173",
+        origin: FRONTEND_URL,
         methods:['GET','POST'],
     }
 })
@@ -23,7 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     credentials:true,
-    origin:"http://localhost:5173"
+    origin: FRONTEND_URL
 }))
 
 
@@ -53,6 +55,10 @@ const NotificationRoutes = require('./routes/notification')
 const CommentRoutes = require('./routes/comment')
 const ConversationRoutes = require('./routes/conversations');
 const MessageRoutes = require('./routes/message')
+const UploadRoutes = require('./routes/upload')
+const MeetingRoutes = require('./routes/meeting')
+const ReportRoutes = require('./routes/report')
+const AdminRoutes = require('./routes/admin')
 
 app.use('/api/auth',UserRoutes);
 app.use('/api/post',PostRoutes);
@@ -60,8 +66,16 @@ app.use('/api/notification',NotificationRoutes);
 app.use('/api/comment',CommentRoutes)
 app.use('/api/conversation',ConversationRoutes)
 app.use('/api/message',MessageRoutes)
+app.use('/api/upload',UploadRoutes)
+app.use('/api/meeting',MeetingRoutes)
+app.use('/api/report',ReportRoutes)
+app.use('/api/admin',AdminRoutes)
 
 
-server.listen(PORT,()=>{
-    console.log("Backend Server is running on Port" ,PORT)
-})
+if (require.main === module) {
+    server.listen(PORT,()=>{
+        console.log("Backend Server is running on Port" ,PORT)
+    })
+}
+
+module.exports = { app, server };

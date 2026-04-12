@@ -1,0 +1,76 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-tests:
+    name: Backend Tests (Jest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: back/package-lock.json
+      - run: npm ci
+        working-directory: back
+      - run: npm test
+        working-directory: back
+        env:
+          NODE_ENV: test
+          JWT_PRIVATE_KEY: secret
+          GOOGLE_CLIENT_ID: fake_google_client_id
+
+  frontend-tests:
+    name: Frontend Tests (Playwright)
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: front/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: back
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: front
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        working-directory: front
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        working-directory: front
+        env:
+          NODE_ENV: test
+          PORT: 4000
+          DB_URL: mongodb://127.0.0.1:27017/tutorme
+          JWT_PRIVATE_KEY: secret
+          GOOGLE_CLIENT_ID: fake_google_client_id
+          VITE_API_URL: http://localhost:4000
+          VITE_WS_URL: http://localhost:4000
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: front/playwright-report/
+          retention-days: 30

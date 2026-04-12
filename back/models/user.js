@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
     },
     cover_pic:{
         type:String,
-        default:'https://wallpaperaccess.com/full/6060285.png'
+        default:''
     },
     about: {
         type: String,
@@ -73,6 +73,34 @@ const UserSchema = new mongoose.Schema({
     ],
     resume: {
         type: String,
+    },
+    points: {
+        type: Number,
+        default: 500,
+    },
+    stars: [
+        {
+            rating: { type: Number, min: 1, max: 5 },
+            comment: { type: String, default: '' },
+            meetingId: { type: mongoose.Schema.Types.ObjectId, ref: 'meeting' },
+            fromUser: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+            fromUserName: { type: String },
+            meetingTitle: { type: String },
+            meetingDate: { type: Date },
+            createdAt: { type: Date, default: Date.now },
+        }
+    ],
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    linkedinConnected: {
+        type: Boolean,
+        default: false,
+    },
+    twitterConnected: {
+        type: Boolean,
+        default: false,
     },
 },{timestamps:true});
 

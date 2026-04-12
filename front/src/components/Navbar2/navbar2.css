@@ -1,8 +1,8 @@
-
-.searchInput{
-    transition: width 0.5s;
+.searchInput {
+    transition: width 0.3s ease;
 }
-.searchInput:focus{
-    width: 350px;
-
+.searchInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #435465;
+    width: 280px;
 }

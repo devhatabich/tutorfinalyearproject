@@ -6,6 +6,12 @@ const ConversationSchema = new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"user"
         }
+    ],
+    clearedHistory: [
+        {
+            user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+            clearedAt: { type: Date }
+        }
     ]
 },{timestamps:true});
 

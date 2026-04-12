@@ -1,67 +1,43 @@
 import React, { useState } from 'react'
-import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
 
+const inputCls = 'w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-gray-400 transition-colors';
 
 const AboutModal = ({ handleEditFunc, selfData }) => {
+    const [data, setData] = useState({
+        about: selfData?.about || '',
+        skillInp: selfData?.skills?.join(', ') || '',
+    });
 
-    const [data, setData] = useState({ about: selfData?.about, skillInp: selfData?.skills?.join(','), resume: selfData?.resume });
-    const [loading, setLoading] = useState(false)
+    const onChange = (key) => (e) => setData(prev => ({ ...prev, [key]: e.target.value }));
 
-    const onChangeHandle = (event, key) => {
-        setData({ ...data, [key]: event.target.value })
-    }
-
-    const handleInputImage = async (e) => {
-        const files = e.target.files;
-        const data = new FormData();
-        data.append('file', files[0]);
-
-        data.append('upload_preset', 'linkedInClone');
-        setLoading(true)
-        try {
-            const response = await axios.post("", data)
-
-            const imageUrl = response.data.url;
-            setData({ ...data, resume: imageUrl })
-
-        } catch (err) {
-            console.log(err)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const handleOnSave = async () => {
-        let arr = data?.skillInp?.split(',');
-
-        let newData = { ...selfData, about: data.about, skills: arr, resume: data.resume };
-        handleEditFunc(newData);
-    }
+    const handleSave = () => {
+        const skills = data.skillInp.split(',').map(s => s.trim()).filter(Boolean);
+        handleEditFunc({ ...selfData, about: data.about, skills });
+    };
 
     return (
-        <div className='my-8'>
+        <div className='px-5 py-4 overflow-y-auto'>
             <div className='w-full mb-4'>
-                <label>About*</label>
-                <br />
-                <textarea value={data.about} onChange={(e) => onChangeHandle(e, 'about')} className='p-2 mt-1 w-full border-1 rounded-md' cols={10} rows={3}></textarea>
-            </div>
-            <div className='w-full mb-4'>
-                <label>Skills*(Add by seperating comma)</label>
-                <br />
-                <textarea value={data.skillInp} onChange={(e) => onChangeHandle(e, 'skillInp')} className='p-2 mt-1 w-full border-1 rounded-md' cols={10} rows={3}></textarea>
-            </div>
-            <div className='w-full mb-4'>
-                <label htmlFor='resumeUpload' className='p-2 bg-gray-700 text-white rounded-lg cursor-pointer'>Upload application</label>
-                <input onChange={handleInputImage} type='file' className='hidden' id='resumeUpload' />
-                {
-                    data.resume && <div className='my-2'>{data.resume}</div>
-                }
+                <label className='text-sm font-medium text-gray-700 block mb-1'>About</label>
+                <textarea value={data.about} onChange={onChange('about')} rows={4} className={`${inputCls} resize-none`} placeholder='Write something about yourself…' />
             </div>
 
-            <div className="bg-gray-700 text-white w-fit py-1 px-3 cursor-pointer rounded-2xl" onClick={handleOnSave}>Save</div>
+            <div className='w-full mb-4'>
+                <label className='text-sm font-medium text-gray-700 block mb-1'>Skills <span className='text-gray-400 font-normal'>(comma separated)</span></label>
+                <textarea value={data.skillInp} onChange={onChange('skillInp')} rows={3} className={`${inputCls} resize-none`} placeholder='e.g. React, Node.js, Design' />
+            </div>
 
+            <button
+                onClick={handleSave}
+                className='w-full py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer transition-opacity hover:opacity-90 mt-1 up-btn-glow'
+                style={{ backgroundColor: '#435465' }}
+            >
+                Save changes
+            </button>
+            <ToastContainer />
         </div>
-    )
-}
+    );
+};
 
-export default AboutModal
+export default AboutModal;

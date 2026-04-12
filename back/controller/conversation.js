@@ -7,6 +7,10 @@ exports.addConversation = async(req,res)=>{
     try{
         let senderId = req.user._id;
         let { recieverId, message } = req.body;
+        const isFriend = req.user.friends.some(id => id.equals(recieverId));
+        if (!isFriend) {
+            return res.status(403).json({ error: 'NOT_FRIENDS', message: 'Messaging is only available between connected users.' });
+        }
         let isConvExist = await ConversationModal.findOne({
             members: { $all: [senderId, recieverId] }
         });
