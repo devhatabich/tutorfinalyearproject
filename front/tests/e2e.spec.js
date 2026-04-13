@@ -86,7 +86,7 @@ test.describe("E2E Tests for TutorMe - Peer Tutoring Platform Final Year Project
     await page.click('button:has-text("Create Account")');
     await page.waitForURL("**/feeds", { timeout: 30000 });
 
-    await page.click("text=Friends");
+    await page.click("text=Peers");
     await page.waitForURL("**/myNetwork", { timeout: 30000 });
     await expect(page.locator("text=Network").first()).toBeVisible();
   });
