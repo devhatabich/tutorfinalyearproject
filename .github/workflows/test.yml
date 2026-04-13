@@ -67,6 +67,7 @@ jobs:
           GOOGLE_CLIENT_ID: fake_google_client_id
           VITE_API_URL: http://localhost:4000
           VITE_WS_URL: http://localhost:4000
+          VITE_APP_GOOGLE_AUTH_KEY: fake_google_client_id
 
       - uses: actions/upload-artifact@v4
         if: always()
