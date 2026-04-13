@@ -38,6 +38,11 @@ export default defineConfig({
       port: 5173,
       reuseExistingServer: !process.env.CI,
       timeout: 180 * 1000,
+      env: {
+        VITE_API_URL: 'http://localhost:4000',
+        VITE_WS_URL: 'http://localhost:4000',
+        VITE_APP_GOOGLE_AUTH_KEY: 'fake_google_client_id',
+      }
     }
   ],
 });
