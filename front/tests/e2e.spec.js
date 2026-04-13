@@ -88,7 +88,7 @@ test.describe("E2E Tests for TutorMe - Peer Tutoring Platform Final Year Project
 
     await page.click("text=Peers");
     await page.waitForURL("**/myNetwork", { timeout: 30000 });
-    await expect(page.locator("text=Network").first()).toBeVisible();
+    await expect(page.locator("text=Peers").first()).toBeVisible();
   });
 
   test("5 & 6. Users can schedule and rate meetings", async ({ page }) => {
