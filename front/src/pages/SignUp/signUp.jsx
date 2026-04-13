@@ -75,7 +75,7 @@ const SignUp = (props) => {
                             type="text"
                             maxLength={100}
                             className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all"
-                            placeholder="student@gmail.com"
+                            placeholder="you@gmail.com"
                         />
                     </div>
                     <div>
