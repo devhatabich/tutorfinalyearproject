@@ -41,8 +41,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: front/package-lock.json
       - name: Install backend dependencies
         run: npm ci
         working-directory: back
@@ -53,7 +51,7 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: front
       - name: Build frontend for tests
-        run: npm run build
+        run: npm run build -- --force
         working-directory: front
         env:
           VITE_API_URL: http://localhost:4000
