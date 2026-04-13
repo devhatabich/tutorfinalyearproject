@@ -33,8 +33,9 @@ export default defineConfig({
         GOOGLE_CLIENT_ID: 'fake_google_client_id',
       }
     },
+
     {
-      command: 'npm run dev',
+      command: 'npm run preview',
       port: 5173,
       reuseExistingServer: !process.env.CI,
       timeout: 180 * 1000,
