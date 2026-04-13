@@ -50,8 +50,11 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         working-directory: front
+      - name: Clean dist
+        run: rm -rf dist
+        working-directory: front
       - name: Build frontend for tests
-        run: npm run build -- --force
+        run: npm run build
         working-directory: front
         env:
           VITE_API_URL: http://localhost:4000
