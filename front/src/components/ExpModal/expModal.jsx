@@ -42,10 +42,10 @@ const ExpModal = ({ handleEditFunc, selfData, updateExp }) => {
 
     return (
         <div className='px-5 py-4 overflow-y-auto'>
-            {field('Role', 'designation', 'e.g. Software Engineer')}
-            {field('Institution / Company', 'company_name', 'e.g. MIT, Acme Corp')}
+            {field('Degree Title', 'designation', 'e.g. Software Development')}
+            {field('University Name', 'company_name', 'e.g. SETU')}
             {field('Duration', 'duration', 'e.g. 2020 – 2024')}
-            {field('Location', 'location', 'e.g. New York, NY')}
+            {field('University Campus Location', 'location', 'e.g. Carlow, Carlow')}
 
             <div className='flex gap-3 mt-2'>
                 <button
