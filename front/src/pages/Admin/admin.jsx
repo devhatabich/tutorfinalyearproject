@@ -48,7 +48,7 @@ const Dashboard = ({ stats, reports, onNavigate }) => (
     <div className="p-6 space-y-6">
         <div>
             <h2 className="text-xl font-bold text-gray-900 mb-1">Dashboard</h2>
-            <p className="text-sm text-gray-500">Overview of platform activity</p>
+            <p className="text-sm text-blue-200">Overview of platform activity</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <StatCard
@@ -529,11 +529,11 @@ const Admin = () => {
                     </button>
                     <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#435465' }}>
-                            <span className="text-white font-bold text-xs">u</span>
+                            <span className="text-white font-bold text-xs">A</span>
                         </div>
                         <span className="font-bold text-sm" style={{ color: '#435465' }}>Admin Panel</span>
                     </div>
-                    <Avatar src={adminUser?.profilePic} name={adminUser?.f_name} size="xs" className="w-7 h-7" />
+                    {/*<Avatar src={adminUser?.profilePic} name={adminUser?.f_name} size="xs" className="w-7 h-7" />*/}
                 </div>
 
                 {/* Scrollable content */}
