@@ -197,7 +197,7 @@ const Footer = () => {
 
                 {/* Divider */}
                 <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <p className="text-xs text-gray-400">Made with love by <a href='https://github.com/devhatabich'>@devhatabich</a> &mdash; TutorMe &copy; {new Date().getFullYear()}</p>
+                    <p className="text-xs text-gray-400">Made with love by <a target="_blank" className="text-gray-400 no-underline hover:text-[#7eb8a4] transition-colors cursor-pointer" href='https://github.com/devhatabich'>@devhatabich</a> &mdash; TutorMe &copy; {new Date().getFullYear()}</p>
                     <p className="text-xs text-gray-400">Building community together.</p>
                 </div>
             </div>
