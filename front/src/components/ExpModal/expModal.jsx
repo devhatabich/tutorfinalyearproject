@@ -45,7 +45,7 @@ const ExpModal = ({ handleEditFunc, selfData, updateExp }) => {
             {field('Degree Title', 'designation', 'e.g. Software Development')}
             {field('University Name', 'company_name', 'e.g. SETU')}
             {field('Duration', 'duration', 'e.g. 2020 – 2024')}
-            {field('University Campus Location', 'location', 'e.g. Carlow, Carlow')}
+            {field('University Campus Location', 'location', 'e.g. Carlow')}
 
             <div className='flex gap-3 mt-2'>
                 <button
