@@ -48,27 +48,27 @@ const Dashboard = ({ stats, reports, onNavigate }) => (
     <div className="p-6 space-y-6">
         <div>
             <h2 className="text-xl font-bold text-gray-900 mb-1">Dashboard</h2>
-            <p className="text-sm text-blue-200">Overview of platform activity</p>
+            <p className="text-sm text-gray-700">Overview of platform activity</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <StatCard
-                icon={<PeopleAltIcon sx={{ color: '#435465', fontSize: 24 }} />}
+                icon={<PeopleAltIcon sx={{ color: '#4c9549', fontSize: 24 }} />}
                 label="Total Users"
                 value={stats.totalUsers}
                 sub={stats.newUsersThisWeek > 0 ? `+${stats.newUsersThisWeek} this week` : null}
             />
             <StatCard
-                icon={<PostAddIcon sx={{ color: '#435465', fontSize: 24 }} />}
+                icon={<PostAddIcon sx={{ color: '#ffffff', fontSize: 24 }} />}
                 label="Total Posts"
                 value={stats.totalPosts}
             />
             <StatCard
-                icon={<EventNoteIcon sx={{ color: '#435465', fontSize: 24 }} />}
+                icon={<EventNoteIcon sx={{ color: '#ffffff', fontSize: 24 }} />}
                 label="Total Meetings"
                 value={stats.totalMeetings}
             />
             <StatCard
-                icon={<ReportProblemIcon sx={{ color: stats.pendingReports > 0 ? '#dc2626' : '#435465', fontSize: 24 }} />}
+                icon={<ReportProblemIcon sx={{ color: stats.pendingReports > 0 ? '#dc2626' : '#ffffff', fontSize: 24 }} />}
                 label="Pending Reports"
                 value={stats.pendingReports}
                 sub={stats.pendingReports > 0 ? 'Needs attention' : null}
