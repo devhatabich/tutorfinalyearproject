@@ -301,11 +301,16 @@ describe('Backend Tests (1 to 13)', () => {
         const receiver4 = await User.create({ email: 'r4@example.com', password: 'pwd', points: 500, f_name: 'R4' });
         const token = generateToken(creator._id);
 
-        const baseTime = Date.now() + 24 * 60 * 60 * 1000;
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        tomorrow.setHours(8,0,0,0);
 
-        await Meeting.create({ creator: creator._id, receiver: receiver1._id, title: 'M1', scheduledAt: new Date(baseTime + 2 * 60 * 60 * 1000), pointsPromised: 100 });
-        await Meeting.create({ creator: creator._id, receiver: receiver2._id, title: 'M2', scheduledAt: new Date(baseTime + 4 * 60 * 60 * 1000), pointsPromised: 100 });
-        await Meeting.create({ creator: creator._id, receiver: receiver3._id, title: 'M3', scheduledAt: new Date(baseTime + 6 * 60 * 60 * 1000), pointsPromised: 100 });
+        // const baseTime = Date.now() + 24 * 60 * 60 * 1000;
+        const baseTime = tomorrow.getTime();
+
+        await Meeting.create({ creator: creator._id, receiver: receiver1._id, title: 'M1', scheduledAt: new Date(baseTime + 0 * 60 * 60 * 1000), pointsPromised: 100 });
+        await Meeting.create({ creator: creator._id, receiver: receiver2._id, title: 'M2', scheduledAt: new Date(baseTime + 2 * 60 * 60 * 1000), pointsPromised: 100 });
+        await Meeting.create({ creator: creator._id, receiver: receiver3._id, title: 'M3', scheduledAt: new Date(baseTime + 4 * 60 * 60 * 1000), pointsPromised: 100 });
 
         const res = await request(app)
             .post('/api/meeting/')
@@ -313,7 +318,7 @@ describe('Backend Tests (1 to 13)', () => {
             .send({
                 receiverId: receiver4._id,
                 title: 'Meeting 4',
-                scheduledAt: new Date(baseTime + 8 * 60 * 60 * 1000),
+                scheduledAt: new Date(baseTime + 6 * 60 * 60 * 1000),
                 pointsPromised: 100
             });
         
