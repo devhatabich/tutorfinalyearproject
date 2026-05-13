@@ -15,9 +15,8 @@ const io = new Server(server,{
     }
 })
 
-
-require('./connection');
 require('dotenv').config({path:"./config.env"});
+require('./connection');
 
 const PORT = process.env.PORT || 4000;
 
